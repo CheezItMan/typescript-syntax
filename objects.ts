@@ -11,3 +11,9 @@ const profile = {
   },
 }
 
+// Destructuring in typescript
+const { age }: { age: number} = profile;
+
+const { coords: {lat, lng } }: {coords: {lat: number, lng: number }} = profile;
+
+console.log(lat);
