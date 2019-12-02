@@ -1,4 +1,21 @@
+// Decorator
+const testDecorator = function (target: any, key: string) {
+  console.log(target);
+  console.log(key);
+  console.log(target[key]);
+}
+
+const parameterDecorator = function (target: any, key: string, index: number) {
+  console.log(key, index);
+}
+
+const classDecorator = function (constructor: typeof Boat) {
+  console.log(constructor)
+}
+
+@classDecorator
 class Boat {
+  @testDecorator
   color: string = 'red';
 
   get formattedColor(): string {
@@ -6,14 +23,22 @@ class Boat {
   }
 
   @logError('Ooops Boat was sunk in ocean')
-  pilot(): void {
-    throw new Error();
-    console.log('swish');
+  pilot(@parameterDecorator speed: string,
+    @parameterDecorator generateWake: boolean
+  ): void {
+    if (speed === 'fast') {
+      console.log('swish');
+      generateWake ? console.log('generating a wake') : '';
+    } else {
+      console.log('nothin');
+    }
   }
 }
 
 
-// Decorator Factory
+
+
+// Decorator Factory with hoisting
 
 function logError(errorMessage: string) {
   return function (target: any, key: string, desc: PropertyDescriptor): void {
@@ -21,7 +46,7 @@ function logError(errorMessage: string) {
 
     desc.value = function () {
       try {
-        method();
+        method('fast');
       } catch (e) {
         console.log(errorMessage);
       }
@@ -30,5 +55,5 @@ function logError(errorMessage: string) {
 }
 
 
-const b = new Boat();
-b.pilot();
+// const b = new Boat();
+// b.pilot('fast', true);
