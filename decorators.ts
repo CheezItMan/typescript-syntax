@@ -5,26 +5,30 @@ class Boat {
     return `This boat color is ${this.color}`;
   }
 
-  @logError
+  @logError('Ooops Boat was sunk in ocean')
   pilot(): void {
     throw new Error();
     console.log('swish');
   }
 }
 
-// Decorators
 
-function logError(target: any, key: string, desc: PropertyDescriptor): void {
-  const method = desc.value;
+// Decorator Factory
 
-  desc.value = function () {
-    try {
-      method();
-    } catch (e) {
-      console.log('Ooops boat was sunk');
+function logError(errorMessage: string) {
+  return function (target: any, key: string, desc: PropertyDescriptor): void {
+    const method = desc.value;
+
+    desc.value = function () {
+      try {
+        method();
+      } catch (e) {
+        console.log(errorMessage);
+      }
     }
   }
 }
+
 
 const b = new Boat();
 b.pilot();
